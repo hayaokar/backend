@@ -11,7 +11,7 @@ class Photo extends Model
 
     protected $fillable=['file'];
 
-    protected $uploads="backEnd\\public\\images\\";
+    protected $uploads="192.168.1.107\\backEnd\\public\\images\\";
 
     public function getFileAttribute($photo){
         return $this->uploads.$photo;

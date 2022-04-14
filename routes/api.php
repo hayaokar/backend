@@ -51,3 +51,17 @@ Route::resource('adminExchangeProgram',AdminExchangeProgram::class);
 Route::resource('trainingOpp',TrainingOpp::class);
 
 Route::post('register','App\Http\Controllers\loginController@register');
+
+
+Route::post('login','App\Http\Controllers\loginController@login');
+Route::post('logout','App\Http\Controllers\loginController@logout');
+
+Route::get('ActivateCompany/{id}',function ($id){
+    $company=Company::findorfail($id);
+    $company->update(['activated'=>'1']);
+    return $company;
+
+
+});
+
+

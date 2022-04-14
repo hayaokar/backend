@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('password');
-            $table->string('phone');
+            $table->integer('phone');
             $table->string('address');
             $table->string('gender');
-            $table->string('certificates');
+            $table->string('certificates')->nullable();
             $table->timestamps();
         });
     }
