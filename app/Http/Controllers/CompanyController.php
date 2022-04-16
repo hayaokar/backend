@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\training_opp;
 use Illuminate\Http\Request;
 use App\Models\Company;
+use Illuminate\Support\Facades\Auth;
+
 class CompanyController extends Controller
 {
     /**
@@ -13,7 +16,7 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
+        return Company::all();
     }
 
     /**
@@ -66,10 +69,11 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        $id= Auth::user()->id;
         $c=Company::findorfail($id);
-        $c->update($request->all);
+        $c->update($request->all());
     }
 
     /**
@@ -82,5 +86,6 @@ class CompanyController extends Controller
     {
         $c=Company::findorfail($id);
         $c->delete();
+        training_opp::where('company_id',$id)->delete();
     }
 }

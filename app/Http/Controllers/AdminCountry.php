@@ -18,7 +18,7 @@ class AdminCountry extends Controller
         $countries= Country::all();
         $data=array();
         foreach ($countries as $country){
-            $d=array("name"=>$country->name,"photo"=>$country->photo ? $country->photo->file : 'no flag');
+            $d=array("id"=>$country->id,"name"=>$country->name,"photo"=>$country->photo ? "http://localhost//backEnd//public//".$country->photo->file : 'no flag');
             array_push($data,$d);
 
         }
@@ -110,6 +110,10 @@ class AdminCountry extends Controller
     public function destroy($id)
     {
         $c=Country::findorfail($id);
+        $photo_id=$c->photo_id;
+
+        unlink(public_path() . $c->photo->file);
+        Photo::findorfail($photo_id)->delete();
         $c->delete();
     }
 }

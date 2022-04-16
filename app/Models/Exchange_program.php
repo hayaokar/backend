@@ -9,7 +9,13 @@ class exchange_program extends Model
 {
     use HasFactory;
 
+    protected $fillable=[
+        'name',
+        'number_of_students',
+        'details'
+    ];
+
     public function universities(){
-        return $this->belongsToMany('App\Models\exchange_program');
+        return $this->belongsToMany('App\Models\University');
     }
 }

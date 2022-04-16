@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminCountry;
+use App\Http\Controllers\AdminExchangeProgram;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,7 +41,7 @@ Route::get('add_e',function(){
     $e=\App\Models\exchange_program::findorfail(1);
     $u->exchange_programs()->save($e);
 });
-
+Route::resource('adminExchangeProgram',AdminExchangeProgram::class);
 Route::get('register', function () {
     return view('create');
 });

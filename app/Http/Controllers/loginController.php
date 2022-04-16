@@ -6,6 +6,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\student;
 use App\Models\User;
 use App\Models\Company;
+use http\Env\Response;
 use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class loginController extends Controller
                 'role_id'=>$request->role_id,
                 'password'=>$request->password,
             ]);
+            $token=$result->createToken('mytoken')->plainTextToken;
             $request['id']=$result->id;
             if($request->role_id==1){
 
@@ -46,7 +48,11 @@ class loginController extends Controller
             if($request->role_id==2){
                 Company::create($request->all());
             }
-            return $result;
+            $response=[
+                'user'=>$result,
+                'token'=>$token
+            ];
+            return response($response,201);
         }
         catch (QueryException $e){
             $errorCode = $e->errorInfo[1];
@@ -69,11 +75,9 @@ class loginController extends Controller
         ];
         if(Auth::attempt($credentials)){
             $user=Auth::user();
-            $token=md5(time()).'.'.md5($request->email);
+            $token=$user->createToken('mytoken')->plainTextToken;
             $name=$user->name;
-            $user->forceFill([
-                'remember_token'=>$token,
-            ])->save();
+
             $role_id=$user->role_id;
             if($role_id==1){
                 return response()->json([
@@ -115,18 +119,11 @@ class loginController extends Controller
     }
 
     public function logout(Request $request){
-        $request->user()->forceFill([
-            'remember_token'=>null,
-        ])->save();
-        return response()->json(['message'=>'success']);
+        auth()->user()->tokens()->delete();
+
+        return [
+            'message'=>'logged out'
+        ];
     }
-
-
-
-
-
-
-
-
 
 }

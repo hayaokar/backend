@@ -28,6 +28,20 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\Role');
     }
 
+    public function isAdmin(){
+        if($this->role->name=="admin"){
+            return true;
+        }
+        return false;
+    }
+
+    public function isCompany(){
+        if($this->role->name=="company"){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

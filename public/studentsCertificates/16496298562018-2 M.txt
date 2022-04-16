@@ -1,4 +1,0 @@
-DCT
-I-Frame Draw
-Frames Draw
-4:4:2

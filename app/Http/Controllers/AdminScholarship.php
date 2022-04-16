@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use App\Models\Scholarship;
 class AdminScholarship extends Controller
@@ -35,7 +36,24 @@ class AdminScholarship extends Controller
     public function store(Request $request)
     {
 
-        return Scholarship::create($request->all());
+        $input=$request->all();
+
+        if($file=$request->file('photo_id')){
+
+            $name=time(). $file->getClientOriginalName();
+
+            $file->move('images',$name);
+
+            $photo=Photo::create(['file'=>$name]);
+
+            $input['photo_id']=$photo->id;
+
+
+        }
+
+
+        Scholarship::create($input);
+
 
     }
 
@@ -72,7 +90,9 @@ class AdminScholarship extends Controller
     public function update(Request $request, $id)
     {
         $s=Scholarship::findorfail($id);
-        $s->update($request->all);
+        return $s->update($request->all());
+
+
     }
 
     /**

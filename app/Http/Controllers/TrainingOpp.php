@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\training_opp;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TrainingOpp extends Controller
 {
@@ -15,6 +16,14 @@ class TrainingOpp extends Controller
     public function index()
     {
         return Training_opp::all();
+    }
+
+    public function companyTraining(){
+        $id=Auth::user()->id;
+
+
+        return Training_opp::where('company_id',$id)->get();
+
     }
 
     /**
@@ -35,6 +44,8 @@ class TrainingOpp extends Controller
      */
     public function store(Request $request)
     {
+        $id=Auth::user()->id;
+        $request['company_id']=$id;
         return Training_opp::create($request->all());
     }
 
@@ -69,8 +80,16 @@ class TrainingOpp extends Controller
      */
     public function update(Request $request, $id)
     {
-        $t=Training_opp::findorfail($id);
-        $t->update($request->all);
+        $company_id=Training_opp::findorfail($id)->company_id;
+        $auth_id=Auth::user()->id;
+        if($company_id==$auth_id){
+            $t=Training_opp::findorfail($id);
+            $t->update($request->all());
+            return $t;
+        }
+
+        return "this is not your training ";
+
     }
 
     /**

@@ -11,11 +11,18 @@ class Scholarship extends Model
 
     protected $fillable = [
         'name',
-        'country',
-        'password',
-        'phone',
-        'gender',
-        'certificates'
+        'major',
+        'country_id',
+        'target',
+        'duration',
+        'conditions',
+        'requirements',
+        'type',
+        'university_id',
+        'charity_name',
+        'url',
+        'photo_id'
+
     ];
 
     public function university(){

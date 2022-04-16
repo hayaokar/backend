@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('exchange_programs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('number of students');
+            $table->integer('number_of_students');
             $table->string('details');
             $table->timestamps();
         });

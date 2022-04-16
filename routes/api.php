@@ -25,10 +25,8 @@ use App\Models\Company;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/hello',function(){
-    return "hello";
-});
-Route::get('/getScholarShipsCountries',function(){
+
+Route::get('/getScholarshipsCountries',function(){
 
      $scholarships=Scholarship::all();
      $countries=[];
@@ -37,31 +35,56 @@ Route::get('/getScholarShipsCountries',function(){
      }
      return $countries;
 });
-Route::get('/avtivateCompany/{id}',function($id){
-    $c=Company::findorfail($id);
-    $c->update(['activated'=>'1']);
-
-
+Route::get('getScholarships/{id}',function($id){
+    return Scholarship::where('country_id',$id)->get();
 });
-Route::resource('adminScholarship',AdminScholarship::class);
-Route::resource('adminUser',AdminStudent::class);
-Route::resource('company',CompanyController::class);
-Route::resource('adminCountries',AdminCountry::class);
-Route::resource('adminExchangeProgram',AdminExchangeProgram::class);
-Route::resource('trainingOpp',TrainingOpp::class);
 
 Route::post('register','App\Http\Controllers\loginController@register');
 
-
 Route::post('login','App\Http\Controllers\loginController@login');
-Route::post('logout','App\Http\Controllers\loginController@logout');
-
-Route::get('ActivateCompany/{id}',function ($id){
-    $company=Company::findorfail($id);
-    $company->update(['activated'=>'1']);
-    return $company;
 
 
-});
+Route::group(['middleware'=>['auth:sanctum']],function(){
+    Route::post('logout','App\Http\Controllers\loginController@logout');
+    Route::group(['middleware'=>'admin'],function(){
+        Route::get('showAllCompanies',[CompanyController::class,'index']);//to admin to show all companies
+        Route::post('ActivateCompany/{id}',function ($id){
+            $company=Company::findorfail($id);
+            $company->update(['activated'=>'1']);
+            return $company;
 
+
+        });
+        Route::resource('adminScholarship',AdminScholarship::class);
+        Route::resource('adminUser',AdminStudent::class); //maybe delete not added to the table
+        Route::resource('adminExchangeProgram',AdminExchangeProgram::class);
+        Route::resource('adminCountries',AdminCountry::class);
+        Route::delete('deleteCompany/{id}',[CompanyController::class,'destroy']);//to admin delete company
+        Route::get('trainingOpp',[TrainingOpp::class,'index']);
+
+
+    });
+    Route::group(['middleware'=>'company'],function(){
+        Route::put('updateCompanyInfo',[CompanyController::class,'update']);//to company to update information
+        Route::post('trainingOpp',[TrainingOpp::class,'store']);
+        Route::put('trainingOpp/{id}',[TrainingOpp::class,'update']);
+        Route::delete('trainingOpp/{id}',[TrainingOpp::class,'destroy']);
+        Route::get('myTraining',[TrainingOpp::class,'companyTraining']);
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+);
 
