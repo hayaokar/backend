@@ -25,6 +25,10 @@ class Scholarship extends Model
 
     ];
 
+    public function photo(){
+        return $this->belongsTo('App\Models\Photo');
+    }
+
     public function university(){
         return $this->belongsTo('App\Models\university');
     }

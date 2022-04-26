@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('student_id');
             $table->integer('training_opp_id');
-            $table->string('student_status');
+            $table->string('student_status')->default('waiting');
             $table->timestamps();
         });
     }

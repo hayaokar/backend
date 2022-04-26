@@ -6,7 +6,10 @@ use App\Http\Controllers\AdminScholarship;
 use App\Http\Controllers\AdminStudent;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\TrainingOpp;
+use App\Models\student;
+use App\Models\training_opp;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Models\Scholarship;
 use App\Models\Company;
@@ -39,6 +42,10 @@ Route::get('getScholarships/{id}',function($id){
     return Scholarship::where('country_id',$id)->get();
 });
 
+Route::get('trainingOpp',[TrainingOpp::class,'index']);
+
+
+
 Route::post('register','App\Http\Controllers\loginController@register');
 
 Route::post('login','App\Http\Controllers\loginController@login');
@@ -60,7 +67,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
         Route::resource('adminExchangeProgram',AdminExchangeProgram::class);
         Route::resource('adminCountries',AdminCountry::class);
         Route::delete('deleteCompany/{id}',[CompanyController::class,'destroy']);//to admin delete company
-        Route::get('trainingOpp',[TrainingOpp::class,'index']);
+
 
 
     });
@@ -70,8 +77,22 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
         Route::put('trainingOpp/{id}',[TrainingOpp::class,'update']);
         Route::delete('trainingOpp/{id}',[TrainingOpp::class,'destroy']);
         Route::get('myTraining',[TrainingOpp::class,'companyTraining']);
+        Route::post('acceptStudent/{t_id}/{s_id}',[CompanyController::class,'acceptStudent']);
+        Route::post('rejectStudent/{t_id}/{s_id}',[CompanyController::class,'rejectStudent']);
+        Route::get('companyTrainingNumber',[CompanyController::class,'companyTrainingNumber']);
+        Route::get('trainingStudents/{id}',[TrainingOpp::class,'trainingStudents']);
+        Route::get('numberOfStudents',[CompanyController::class,'numberOfStudents']);
 
     });
+
+    Route::post('Apply/{id}',function ($id){
+        $t=training_opp::findorfail($id);
+        $id=Auth::user()->id;
+        $s=student::findorfail($id);
+        $t->students()->save($s);
+
+
+    })->middleware('student');
 
 
 

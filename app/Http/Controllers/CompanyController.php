@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\student;
 use App\Models\training_opp;
 use Illuminate\Http\Request;
 use App\Models\Company;
@@ -87,5 +88,42 @@ class CompanyController extends Controller
         $c=Company::findorfail($id);
         $c->delete();
         training_opp::where('company_id',$id)->delete();
+    }
+
+    public function acceptStudent($t_id,$s_id){
+        $t=training_opp::findorfail($t_id);
+        if(Auth::user()->id==$t->company_id){
+            $student=student::findorfail($s_id);
+            $t->students()->updateExistingPivot($student, array('student_status' => 'accepted'), false);
+        }
+    }
+    public function rejectStudent($t_id,$s_id){
+        $t=training_opp::findorfail($t_id);
+        if(Auth::user()->id==$t->company_id){
+            $student=student::findorfail($s_id);
+            $t->students()->updateExistingPivot($student, array('student_status' => 'rejected'), false);
+        }
+    }
+
+
+    public function numberOfStudents(){
+        $id=Auth::user()->id;
+        $c=Company::findorfail($id);
+        $count=0;
+
+
+        foreach ($c->training_opps as $training_opp){
+            $t = $training_opp->students()->get();
+            $count=$count+$t->count();
+        }
+        return $count;
+
+    }
+
+    public function companyTrainingNumber(){
+        $id=Auth::user()->id;
+
+        return Company::findorfail($id)->training_opps()->count();
+
     }
 }

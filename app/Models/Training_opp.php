@@ -13,7 +13,7 @@ class training_opp extends Model
         'company_id',
         'target',
         'duration',
-        'number of seats',
+        'number_of_seats',
         'name'
     ];
 

@@ -26,6 +26,28 @@ class TrainingOpp extends Controller
 
     }
 
+    public function companyTrainingNumber(){
+        $id=Auth::user()->id;
+
+
+        $t = Training_opp::where('company_id',$id)->get();
+
+        return $t->count();
+
+    }
+
+    public function trainingStudents($id){
+
+        $t=training_opp::findorfail($id);
+        if(Auth::user()->id == $t->company_id){
+            return $t->students()->get();
+        }
+        return response()->json([
+            'message'=>'not your training opportunity'
+        ],423);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *

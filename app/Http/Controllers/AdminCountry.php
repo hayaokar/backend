@@ -98,7 +98,23 @@ class AdminCountry extends Controller
     public function update(Request $request, $id)
     {
         $c=Country::findorfail($id);
-        $c->update($request->all());
+
+        $input=$request->all();
+
+        if($file=$request->file('photo_id')){
+
+            $name=time(). $file->getClientOriginalName();
+
+            $file->move('images',$name);
+
+            $photo=Photo::create(['file'=>$name]);
+
+            $input['photo_id']=$photo->id;
+
+
+        }
+
+        $c->update($input);
     }
 
     /**
@@ -110,10 +126,15 @@ class AdminCountry extends Controller
     public function destroy($id)
     {
         $c=Country::findorfail($id);
-        $photo_id=$c->photo_id;
 
-        unlink(public_path() . $c->photo->file);
-        Photo::findorfail($photo_id)->delete();
+        if($c->photo_id){
+            $photo_id=$c->photo_id;
+
+            unlink(public_path() . $c->photo->file);
+            Photo::findorfail($photo_id)->delete();
+        }
+
+
         $c->delete();
     }
 }

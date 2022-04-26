@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('company_id');
             $table->string('name');
-            $table->integer('number of seats');
+            $table->integer('number_of_seats');
             $table->integer('duration');
             $table->string('target');
 

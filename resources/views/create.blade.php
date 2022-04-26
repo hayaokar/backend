@@ -3,7 +3,7 @@
     <h1>Create country</h1>
 
 
-    {!! Form::open(['method'=>'POST','action'=>'App\Http\Controllers\AdminCountry@store','files'=>true]) !!}
+    {!! Form::open(['method'=>'POST','action'=>'App\Http\Controllers\AdminScholarship@store','files'=>true]) !!}
     @csrf
 
 

@@ -14,7 +14,27 @@ class AdminScholarship extends Controller
      */
     public function index()
     {
-        return Scholarship::all();
+        $scholarships= Scholarship::all();
+        $data=array();
+
+        foreach ($scholarships as $scholarship){
+            $d=array("id"=>$scholarship->id,
+                "name"=>$scholarship->name,
+                'country'=>$scholarship->country->name,
+                'major'=>$scholarship->major,
+                'target'=>$scholarship->target,
+                'duration'=>$scholarship->duration,
+                'conditions'=>$scholarship->conditions,
+                'requirements'=>$scholarship->requirements,
+                'type'=>$scholarship->type,
+                'university'=>$scholarship->university_id ? $scholarship->university->name : 'no university',
+                'charity_name'=>$scholarship->charity_name ? : 'no charity',
+                'url'=>$scholarship->url,
+                "photo"=>$scholarship->photo ? "http://localhost//backEnd//public//".$scholarship->photo->file : 'no photo');
+            array_push($data,$d);
+
+        }
+        return json_encode($data);
     }
 
     /**
@@ -24,7 +44,7 @@ class AdminScholarship extends Controller
      */
     public function create()
     {
-        //
+        return view('create');
     }
 
     /**
@@ -55,6 +75,7 @@ class AdminScholarship extends Controller
         Scholarship::create($input);
 
 
+        return "true";
     }
 
     /**
@@ -90,7 +111,24 @@ class AdminScholarship extends Controller
     public function update(Request $request, $id)
     {
         $s=Scholarship::findorfail($id);
-        return $s->update($request->all());
+
+        $input=$request->all();
+
+        if($file=$request->file('photo_id')){
+
+            $name=time(). $file->getClientOriginalName();
+
+            $file->move('images',$name);
+
+            $photo=Photo::create(['file'=>$name]);
+
+            $input['photo_id']=$photo->id;
+
+
+        }
+
+
+        $s->update($input);
 
 
     }
@@ -104,6 +142,13 @@ class AdminScholarship extends Controller
     public function destroy($id)
     {
         $s=Scholarship::findorfail($id);
+        if($s->photo_id){
+            $photo_id=$s->photo_id;
+
+            unlink(public_path() . $s->photo->file);
+            Photo::findorfail($photo_id)->delete();
+        }
+
         $s->delete();
     }
 }

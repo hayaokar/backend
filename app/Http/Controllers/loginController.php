@@ -43,10 +43,10 @@ class loginController extends Controller
 
 
 
-                Student::create($request->all());
+                $result=Student::create($request->all());
             }
             if($request->role_id==2){
-                Company::create($request->all());
+                $result=Company::create($request->all());
             }
             $response=[
                 'user'=>$result,
@@ -76,25 +76,26 @@ class loginController extends Controller
         if(Auth::attempt($credentials)){
             $user=Auth::user();
             $token=$user->createToken('mytoken')->plainTextToken;
-            $name=$user->name;
+            $id=$user->id;
 
             $role_id=$user->role_id;
             if($role_id==1){
+                $user=Student::findorfail($id);
                 return response()->json([
                     'token'=>$token,
-                    'name'=>$name,
-                    'role'=>"student"
+                    'role'=>"student",
+                    'user'=>$user
                 ]);
             }
 
             elseif($role_id==2){
-                $id = $user->id;
-                if(Company::findorfail($id)->activated)
+                $user=Company::findorfail($id);
+                if($user->activated)
                 {
                     return response()->json([
                         'token'=>$token,
-                        'name'=>$name,
-                        'role'=>"company"
+                        'role'=>"company",
+                        'user'=>$user
                     ]);
                 }
                 return response()->json([
@@ -106,7 +107,7 @@ class loginController extends Controller
             elseif($role_id==3){
                 return response()->json([
                     'token'=>$token,
-                    'name'=>$name,
+                    'user'=>$user,
                     'role'=>"admin"
                 ]);
             }

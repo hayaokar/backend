@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminCountry;
+use App\Http\Controllers\AdminScholarship;
 use App\Http\Controllers\AdminExchangeProgram;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,7 @@ Route::get('/hello',function(){
     echo json_encode($array);
 });
 Route::resource('adminCountries',AdminCountry::class);
+Route::resource('adminScholarShip',AdminScholarShip::class);
 Route::get('createTrain',function(){
 
     \App\Models\training_opp::create(['company_id'=>1,'name'=>'dvs','number of seats'=>3
