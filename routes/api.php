@@ -32,24 +32,38 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/getScholarshipsCountries',function(){
 
      $scholarships=Scholarship::all();
+
      $countries=[];
      foreach ($scholarships as $scholarship){
-         $countries[]=$scholarship->country;
+         if(!(in_array($scholarship->country, $countries))){
+             $countries[]=$scholarship->country;
+         }
      }
      return $countries;
 });
 Route::get('getScholarships/{id}',function($id){
-    return Scholarship::where('country_id',$id)->get();
+    $scholarships = Scholarship::where('country_id',$id)->get();
+    $data=array();
+    foreach ($scholarships as $scholarship){
+        $d=array("id"=>$scholarship->id,"name"=>$scholarship->name,"photo"=>$scholarship->photo ? "http://localhost//backEnd//public//".$scholarship->photo->file : 'no photo');
+        array_push($data,$d);
+    }
+    return json_encode($data);
 });
 
 Route::get('trainingOpp',[TrainingOpp::class,'index']);
 
-
+Route::get('scholarship/{id}',[AdminScholarship::class,'show']);
 
 Route::post('register','App\Http\Controllers\loginController@register');
 
 Route::post('login','App\Http\Controllers\loginController@login');
 
+Route::get('trainingOpp/{id}',[TrainingOpp::class,'show']);
+
+Route::get('exchangePrograms',[AdminExchangeProgram::class,'index']);
+
+Route::get('exchangePrograms/{id}',[AdminExchangeProgram::class,'show']);
 
 Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('logout','App\Http\Controllers\loginController@logout');
@@ -93,17 +107,6 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
 
 
     })->middleware('student');
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

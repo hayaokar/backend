@@ -12,10 +12,10 @@ class exchange_program extends Model
     protected $fillable=[
         'name',
         'number_of_students',
-        'details'
+        'details',
+        'university_name_1',
+        'university_name_2'
     ];
 
-    public function universities(){
-        return $this->belongsToMany('App\Models\University');
-    }
+
 }

@@ -16,27 +16,10 @@ class AdminExchangeProgram extends Controller
      */
     public function index()
     {
-        $result=array();
-        $e  = Exchange_program::all();
 
-        foreach ($e as $item){
-            $u=$item->universities;
-            $u1=$u[0];
-            $u2=$u[1];
-            $a=array(
-                'id'=>$item->id,
-                'name'=>$item->name,
-                //'number_of_students'=>$item->number_of_students,
-                'details'=>$item->details,
-                'university 1'=>$u1->name,
-                'university 2'=>$u2->name
+        return Exchange_program::all();
 
-            );
-            array_push($result,$a);
-        }
 
-        $result=json_encode($result);
-        return $result;
 
 
 
@@ -60,14 +43,7 @@ class AdminExchangeProgram extends Controller
      */
     public function store(Request $request)
     {
-        $e= exchange_program::create($request->all());
-        $u1=university::findorfail($request['id1']);
-        $u2=university::findorfail($request['id2']);
-        $e->universities()->save($u1);
-        $e->universities()->save($u2);
-
-
-
+       exchange_program::create($request->all());
 
     }
 

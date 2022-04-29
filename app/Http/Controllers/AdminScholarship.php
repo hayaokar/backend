@@ -27,7 +27,7 @@ class AdminScholarship extends Controller
                 'conditions'=>$scholarship->conditions,
                 'requirements'=>$scholarship->requirements,
                 'type'=>$scholarship->type,
-                'university'=>$scholarship->university_id ? $scholarship->university->name : 'no university',
+                'university'=>$scholarship->university_name ? : 'no university',
                 'charity_name'=>$scholarship->charity_name ? : 'no charity',
                 'url'=>$scholarship->url,
                 "photo"=>$scholarship->photo ? "http://localhost//backEnd//public//".$scholarship->photo->file : 'no photo');

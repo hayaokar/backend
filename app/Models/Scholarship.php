@@ -18,7 +18,7 @@ class Scholarship extends Model
         'conditions',
         'requirements',
         'type',
-        'university_id',
+        'university_name',
         'charity_name',
         'url',
         'photo_id'
@@ -29,9 +29,6 @@ class Scholarship extends Model
         return $this->belongsTo('App\Models\Photo');
     }
 
-    public function university(){
-        return $this->belongsTo('App\Models\university');
-    }
 
     public function country(){
         return $this->belongsTo('App\Models\Country');

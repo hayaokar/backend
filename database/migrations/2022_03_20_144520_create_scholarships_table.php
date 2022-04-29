@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('conditions')->nullable();
             $table->string('requirements')->nullable();
             $table->string('type')->nullable();
-            $table->integer('university_id')->nullable();
+            $table->integer('university_name')->nullable();
             $table->string('charity_name')->nullable();
             $table->string('url')->nullable();
             $table->string('photo_id')->nullable();
