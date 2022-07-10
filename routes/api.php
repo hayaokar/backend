@@ -33,13 +33,18 @@ Route::get('/getScholarshipsCountries',function(){
 
      $scholarships=Scholarship::all();
 
-     $countries=[];
+    $data=array();
+    $Id=array();
      foreach ($scholarships as $scholarship){
-         if(!(in_array($scholarship->country, $countries))){
-             $countries[]=$scholarship->country;
+         if(!(in_array($scholarship->country->id,$Id))){
+             $d=array("id"=>$scholarship->country->id,"name"=>$scholarship->country->name,"photo"=>$scholarship->country->photo ? "http://localhost//backEnd//public//".$scholarship->country->photo->file : 'no photo');
+             array_push($data,$d);
+             array_push($Id,$scholarship->country->id);
          }
      }
-     return $countries;
+     return $data;
+
+
 });
 Route::get('getScholarships/{id}',function($id){
     $scholarships = Scholarship::where('country_id',$id)->get();
@@ -65,6 +70,8 @@ Route::get('exchangePrograms',[AdminExchangeProgram::class,'index']);
 
 Route::get('exchangePrograms/{id}',[AdminExchangeProgram::class,'show']);
 
+Route::get('adminCountries',[AdminCountry::class,'index']);
+
 Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post('logout','App\Http\Controllers\loginController@logout');
     Route::group(['middleware'=>'admin'],function(){
@@ -79,8 +86,28 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
         Route::resource('adminScholarship',AdminScholarship::class);
         Route::resource('adminUser',AdminStudent::class); //maybe delete not added to the table
         Route::resource('adminExchangeProgram',AdminExchangeProgram::class);
-        Route::resource('adminCountries',AdminCountry::class);
+//        Route::resource('adminCountries',AdminCountry::class);
+        Route::post('adminCountries',[AdminCountry::class,'store']);
+        Route::put('adminCountries/{id}',[AdminCountry::class,'update']);
+        Route::delete('adminCountries/{id}',[AdminCountry::class,'destroy']);
         Route::delete('deleteCompany/{id}',[CompanyController::class,'destroy']);//to admin delete company
+        Route::get('usersNumber',function(){
+            $u=\App\Models\User::all();
+            return $u->count();
+        });
+        Route::get('countriesNumber',function(){
+            $c=\App\Models\Country::all();
+            return $c->count();
+        });
+        Route::get('scholarshipsNumber',function(){
+            $s=Scholarship::all();
+            return $s->count();
+        });
+        Route::get('trainingNumber',function(){
+            $t=training_opp::all();
+            return $t->count();
+        });
+
 
 
 
@@ -96,17 +123,30 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
         Route::get('companyTrainingNumber',[CompanyController::class,'companyTrainingNumber']);
         Route::get('trainingStudents/{id}',[TrainingOpp::class,'trainingStudents']);
         Route::get('numberOfStudents',[CompanyController::class,'numberOfStudents']);
+        Route::get('company/{id}',[CompanyController::class,'show']);
 
     });
 
-    Route::post('Apply/{id}',function ($id){
+    Route::post('Apply/{id}',function ($id,Request $request){
         $t=training_opp::findorfail($id);
         $id=Auth::user()->id;
         $s=student::findorfail($id);
+        if($file=$request->file('certificates')) {
+
+            $name = time() . $file->getClientOriginalName();
+
+            $file->move('studentsCertificates', $name);
+
+            $s->update(['certificates' => $name]);
+
+        }
+
         $t->students()->save($s);
 
 
     })->middleware('student');
+
+
 
 
 }

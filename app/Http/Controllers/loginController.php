@@ -29,20 +29,6 @@ class loginController extends Controller
             $request['id']=$result->id;
             if($request->role_id==1){
 
-                if($file=$request->file('certificates')) {
-
-
-                    $name = time() . $file->getClientOriginalName();
-
-                    $file->move('studentsCertificates', $name);
-
-                    $request['certificates'] = $name;
-
-
-                }
-
-
-
                 $result=Student::create($request->all());
             }
             if($request->role_id==2){

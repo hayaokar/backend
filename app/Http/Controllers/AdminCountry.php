@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\Photo;
+use http\Client\Curl\User;
 use Illuminate\Http\Request;
 use App\Models\Scholarship;
 class AdminCountry extends Controller
@@ -115,6 +116,7 @@ class AdminCountry extends Controller
         }
 
         $c->update($input);
+
     }
 
     /**
@@ -133,6 +135,8 @@ class AdminCountry extends Controller
             unlink(public_path() . $c->photo->file);
             Photo::findorfail($photo_id)->delete();
         }
+
+        Scholarship::where('country_id', $c->id)->delete();
 
 
         $c->delete();

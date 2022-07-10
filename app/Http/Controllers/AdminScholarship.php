@@ -86,7 +86,27 @@ class AdminScholarship extends Controller
      */
     public function show($id)
     {
-        return Scholarship::findorfail($id);
+        $scholarship=Scholarship::findorfail($id);
+        $data=array();
+        $d=array("id"=>$scholarship->id,
+            "name"=>$scholarship->name,
+            'country'=>$scholarship->country->name,
+            'major'=>$scholarship->major,
+            'target'=>$scholarship->target,
+            'duration'=>$scholarship->duration,
+            'conditions'=>$scholarship->conditions,
+            'requirements'=>$scholarship->requirements,
+            'type'=>$scholarship->type,
+            'university'=>$scholarship->university_name ? : 'no university',
+            'charity_name'=>$scholarship->charity_name ? : 'no charity',
+            'url'=>$scholarship->url,
+            "photo"=>$scholarship->photo ? "http://localhost//backEnd//public//".$scholarship->photo->file : 'no photo');
+        array_push($data,$d);
+
+        return json_encode($data);
+
+
+        //        return Scholarship::findorfail($id);
 
     }
 

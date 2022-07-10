@@ -92,7 +92,7 @@ class AdminExchangeProgram extends Controller
     {
         $e=exchange_program::findorfail($id);
 
-        $e->universities()->detach();
+
 
         $e->delete();
     }
